@@ -22,10 +22,10 @@ const HomePage: NextPage<Props> = ({ pokemons }) => {
       >
       <Layout title='Listado de Pokémons'>
 
-          <Grid.Container gap={ 2 } justify='flex-start'>
+          <Grid.Container gap={ 1 } justify='flex-start'>
             {
               pokemons.map( ({ id, name, img }) => (
-                <Grid xs={ 6 } sm={ 3 } md={ 2 } xl={ 2 } key={ id }>
+                <Grid xs={ 6 } sm={ 6 } md={ 2 } xl={ 2 } key={ id }>
                   <motion.div
                   initial={{ opacity: 0.6 }}
                   whileHover={{

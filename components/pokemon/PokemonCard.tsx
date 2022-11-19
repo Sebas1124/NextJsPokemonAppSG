@@ -26,7 +26,7 @@ export const PokemonCard: FC<Props> = ({ id, name, img }) => {
         onPress={ onClick }
         isHoverable 
         isPressable 
-        css={{ w: "100%", h: "400px" }}>
+        css={{ w: "100%", h: "400px", ds: "none" }}>
       <Card.Header 
         css={{ position: "absolute", zIndex: 1, top: 5 }}>
         <Col>
@@ -34,7 +34,7 @@ export const PokemonCard: FC<Props> = ({ id, name, img }) => {
             size={12} weight="bold" transform="uppercase" color={ ( isDark ) ? '#ffffffAA' : '#000' }>
             Pokémon
           </Text>
-          <Text h3 color={ ( isDark ) ? '#FFF' : '#000' } style={{ textTransform: 'uppercase' }}>
+          <Text h4 color={ ( isDark ) ? '#FFF' : '#000' } style={{ textTransform: 'uppercase' }}>
             { name }
           </Text>
         </Col>

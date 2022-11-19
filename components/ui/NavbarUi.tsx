@@ -20,12 +20,12 @@ export const NavbarUi = () => {
         alignItems: 'center',
         justifyContent:'start',
         padding: '0px 20px',
-        backgroundColor: ( isDark ) ? '#16181A' : '#FFF' 
+        backgroundColor: ( isDark ) ? '#16181A' : '#FFF',
      }}>
 
 
        <NextLink href='/' passHref legacyBehavior>
-          <div style={{ display: 'flex', justifyContent:'center', alignItems:'center', cursor: 'pointer' }}>
+          <div style={{ display: 'flex', justifyContent:'center', alignItems:'center', cursor: 'pointer', marginRight: 30 }}>
             <Image
                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
                 alt='Logo'
@@ -46,7 +46,7 @@ export const NavbarUi = () => {
           </div>
       </NextLink>
 
-       <span style={{ marginLeft: 20, marginRight: 10 }}>Tema: { type === 'dark' ? 'Oscuro' : 'Claro' } </span>
+       <span style={{ marginLeft: 10, marginRight: 10 }}>Tema: { type === 'dark' ? 'Oscuro' : 'Claro' } </span>
        <Switch
         iconOn={<SunIcon filled />}
         iconOff={<MoonIcon filled />}

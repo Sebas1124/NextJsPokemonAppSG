@@ -67,7 +67,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
       <Grid.Container css={{ marginTop: '5px' }} gap={ 2 }>
         {/* Pokemon Image Left */}
         <Grid xs={ 12 } sm={ 4 } xl={ 4 }>
-          <Card isHoverable css={{ padding: '30px', maxHeight: 330 }}>
+          <Card isHoverable css={{ padding: '30px', maxHeight: 330, ds: "none" }}>
           <motion.div
             className="box"
             initial={{ opacity: 0, scale: 0.4 }}
