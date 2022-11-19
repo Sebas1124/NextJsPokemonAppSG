@@ -1,14 +1,15 @@
+import { Button, Card, Container, Grid, Text, Image, useTheme, Progress } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
-import { Button, Card, Container, Grid, Text, Image, useTheme, Progress } from '@nextui-org/react';
 
 import { Layout } from "../../components/layouts"
-import { HeartIcon } from '../../components/ui/icons/HeartIcon';
 import { LocalFavorites } from '../../utils';
 import { motion } from 'framer-motion';
 import { pokeApi } from '../../api';
 import { Pokemon } from '../../interfaces';
 import confetti from 'canvas-confetti';
+import { HeartIcon } from '../../components/ui/icons/HeartIcon';
+import { PokemonListResponse } from '../../interfaces/PokemonListResult';
 
 interface Props {
   pokemon: Pokemon;
@@ -25,7 +26,7 @@ const defaults = {
   colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8']
 };
 
-const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
+const PokemonByName: NextPage<Props> = ({ pokemon, image }) => {
 
   const formatter = new Intl.NumberFormat();
 
@@ -63,7 +64,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
 
 
   return (
-    <Layout title={ `Pokemon ${ pokemon.name }` } idPokemon={ pokemon.id }>
+    <Layout title={ `Pokemon ${ pokemon.name }`} idPokemon={ pokemon.id }>
       <Grid.Container css={{ marginTop: '5px' }} gap={ 2 }>
         {/* Pokemon Image Left */}
         <Grid xs={ 12 } sm={ 4 } xl={ 4 }>
@@ -180,7 +181,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
                           }
                         }}
                         style={{ position: 'relative' }}>
-                      <Image alt='Pokémon abilities Image' width={ 250 } src={ pokemon.sprites.other?.dream_world.front_default || 'No-Image.png' }/>
+                      <Image alt='Pokémon Abilities Image' width={ 250 } src={ pokemon.sprites.other?.dream_world.front_default || 'No-Image.png' }/>
                       </motion.div>
                       <div style={{ textAlign: 'center', width: 500 }}>
                       {
@@ -256,24 +257,25 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-  const pokemons151 = [...Array(151)].map( (value, index) => `${ index + 1 }`);
+  const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151');
+  const pokemonNames: string[] = data.results.map( pokemon => pokemon.name );
+
 
   return {
-    paths: pokemons151.map( id => ({
-        params: { id }
-      })
-    ),
+    paths: pokemonNames.map( name => ({
+      params: { name }
+    })),
     fallback: false
   }
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
-  const { id } = params as { id: string };
+  const { name } = params as { name: string };
 
-  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ id }`);
+  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ name }`);
 
-  const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ id }.png`
+  const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ data.id }.png`
 
   
   return {
@@ -284,4 +286,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 }
 
-export default PokemonPage
+export default PokemonByName
