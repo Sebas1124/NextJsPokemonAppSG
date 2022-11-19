@@ -1,10 +1,14 @@
-import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
+import { Button, Card, Container, Grid, Text, Image, useTheme, Progress } from '@nextui-org/react';
+import { useEffect, useState } from 'react';
+
 import { Layout } from "../../components/layouts"
+import { LocalFavorites } from '../../utils';
+import { motion } from 'framer-motion';
+import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import { pokeApi } from '../../api';
 import { Pokemon } from '../../interfaces';
-import { Button, Card, Container, Grid, Text, Image, useTheme, Progress } from '@nextui-org/react';
 import confetti from 'canvas-confetti';
-import { motion } from 'framer-motion';
+import { HeartIcon } from '../../components/ui/icons/HeartIcon';
 
 interface Props {
   pokemon: Pokemon;
@@ -15,9 +19,19 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
 
   const formatter = new Intl.NumberFormat();
 
-  const handleConfetti = () => {
+  const [ isInFavorites, setIsInFavorites ] = useState(false)
+
+  const addFavorites = () => {
     confetti();
+    LocalFavorites.toggleFavorite( pokemon.id )
+    setIsInFavorites( LocalFavorites.existsInFavorites( pokemon.id ) );
   };
+
+  useEffect(() => {
+    setIsInFavorites( LocalFavorites.existsInFavorites( pokemon.id ) );
+  }, [])
+  
+
 
   const { isDark } = useTheme();
 
@@ -25,9 +39,8 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
   return (
     <Layout title={ `Pokemon ${ pokemon.name }` }>
       <Grid.Container css={{ marginTop: '5px' }} gap={ 2 }>
-
+        {/* Pokemon Image Left */}
         <Grid xs={ 12 } sm={ 4 } xl={ 4 }>
-
           <Card isHoverable css={{ padding: '30px', maxHeight: 330 }}>
           <motion.div
             className="box"
@@ -56,12 +69,12 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
               </Card.Body>
           </motion.div>
           </Card>
-
         </Grid>
 
+        {/* Pokemon Info */}
         <Grid xs={ 12 } sm={ 8 }>
             <Card>
-              <Card.Header css={{ display: 'flex', justifyContent: 'space-between', marginLeft: 7 }}>
+              <Card.Header css={{ display: 'flex', justifyContent: 'space-between', marginLeft: 7, flexDirection: 'column' }}>
                 <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ type: 'spring', stiffness: 50 }}
@@ -78,17 +91,18 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
                 <Button
                   auto
                   rounded
-                  onPress={ handleConfetti }
+                  onPress={ addFavorites }
                   ripple={ false }
                   size="xl"
-              
+                  icon={<HeartIcon fill="currentColor" filled />}
+
                   css={{
-                    background: ( !isDark ) ? '#F31260' : '#9A5CDC',
+                    background: ( isInFavorites ? ( !isDark ) ? '#F31260' : '#F31260' : ( !isDark ) ? '#F31260' : '#9A5CDC' ),
                     fontWeight: '$semibold',
                     boxShadow: '$md',
                     position: 'relative',
                     overflow: 'visible',
-                    color: isDark ? '$white' : '$dark',
+                    color: isDark ? '$white' : '$red',
                     px: '$18',
                     '&:after': {
                       content: '""',
@@ -113,7 +127,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon, image }) => {
                     }
                   }}
                 >
-                  Favorito
+                  <Text h5>{ (!isInFavorites) ? 'Agregar a Favoritos' : 'Eliminar de favoritos' }</Text>
                 </Button>
               </Card.Header>
 

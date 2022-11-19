@@ -1,6 +1,6 @@
 import { NextPage, GetStaticProps } from 'next';
 import { Grid } from '@nextui-org/react';
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import { pokeApi } from './../api';
 import { Layout } from '../components/layouts';
@@ -14,11 +14,12 @@ interface Props {
 const HomePage: NextPage<Props> = ({ pokemons }) => {
 
   return (
-    <motion.div
-    animate={{ y: [0, 100, 0], opacity: 1 }}
-    initial={{ opacity: 0 }}
-    exit={{ opacity: 0 }}
-    >
+    <AnimatePresence>
+      <motion.div
+        animate={{ y: [0, 100, 0], opacity: 1, visibility: 'visible' }} 
+        initial={{ opacity: 0 }}
+        exit='hidden'
+      >
       <Layout title='Listado de Pokémons'>
 
           <Grid.Container gap={ 2 } justify='flex-start'>
@@ -42,8 +43,8 @@ const HomePage: NextPage<Props> = ({ pokemons }) => {
           </Grid.Container>
         
       </Layout>
-    </motion.div>
-
+      </motion.div>
+    </AnimatePresence>
   )
 }
 
