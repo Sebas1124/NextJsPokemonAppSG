@@ -263,7 +263,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
         params: { id }
       })
     ),
-    fallback: false
+    fallback: 'blocking'
   }
 }
 
@@ -271,17 +271,27 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const { id } = params as { id: string };
 
-  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ id }`);
-
-  const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ id }.png`
-
-  
-  return {
-    props: {
-      pokemon: data,
-      image
+  try {
+    const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ id }`);
+    const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ id }.png`
+    
+    return {
+      props: {
+        pokemon: data,
+        image
+      },
+      revalidate: 86400,
+    }
+  } catch (error) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
     }
   }
+
+
 }
 
 export default PokemonPage

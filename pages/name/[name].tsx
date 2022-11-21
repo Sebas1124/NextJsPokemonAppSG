@@ -265,7 +265,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
     paths: pokemonNames.map( name => ({
       params: { name }
     })),
-    fallback: false
+    fallback: 'blocking'
   }
 }
 
@@ -273,17 +273,28 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const { name } = params as { name: string };
 
-  const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ name }`);
+  const lowerName = name.toLowerCase();
 
-  const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ data.id }.png`
-
-  
+  try {
+    const { data } = await pokeApi.get<Pokemon>(`/pokemon/${ lowerName }`);
+    const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ data.id }.png`
+    return {
+      props: {
+        pokemon: data,
+        image
+      }
+    }
+  }catch (error) {
   return {
-    props: {
-      pokemon: data,
-      image
+    redirect: {
+      destination: '/',
+      permanent: false,
     }
   }
+  }
+
+  
+  
 }
 
 export default PokemonByName
